@@ -1,0 +1,27 @@
+.App {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 20px;
+}
+
+input {
+    width: 150px;
+    height: 20px;
+    font-size: 20px;
+    border: 2px solid;
+    margin: 5px;
+}
+
+.button-pressed {
+    width: 120px;
+    height: 30px;
+    font-size: 15px;
+    background: none;
+    color: aqua;
+    border: 0;
+    margin: 9px;
+    background-color: black;
+}

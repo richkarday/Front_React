@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Grid, Paper, Avatar, TextField, Button, FormControlLabel, Typography } from '@material-ui/core'
 import Checkbox from '@material-ui/core/Checkbox'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Axios from 'axios';
 
 const Login = () => {
@@ -14,6 +14,8 @@ const Login = () => {
     const [correo, setCorreo] = useState("")
     const [password, setPassword] = useState("")
 
+    let history = useHistory();
+
     const login = () => {
 
         try {
@@ -23,6 +25,7 @@ const Login = () => {
           }).then((response) => {
               alert("Usted inició sesión")
               console.log(response)
+              history.push('/books')
           })    
         }catch(err) {
             alert("No ingresó bien los datos")

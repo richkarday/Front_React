@@ -7,6 +7,7 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
+import Libro from './pages/Libros';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
        </Route>
        <Route path="/users">
          <User/>
+       </Route>
+       <Route path="/books">
+         <Libro/>
        </Route>
      </Switch>
    </Router>
