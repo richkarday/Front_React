@@ -1,7 +1,7 @@
 import './App.css';
 import Login from "./components/login";
 import Register from "./components/register"
-import User from './pages/users';
+import Client from "./components/client"
 import {
   BrowserRouter as Router,
   Switch,
@@ -19,8 +19,8 @@ function App() {
        <Route path="/signup">
          <Register/>
        </Route>
-       <Route path="/users">
-         <User/>
+       <Route  path="/client">
+         <Client/>
        </Route>
        <Route path="/books">
          <Libro/>

@@ -25,7 +25,7 @@ const Login = () => {
           }).then((response) => {
               alert("Usted inició sesión")
               console.log(response)
-              history.push('/books')
+              history.push('/client')
           })    
         }catch(err) {
             alert("No ingresó bien los datos")
