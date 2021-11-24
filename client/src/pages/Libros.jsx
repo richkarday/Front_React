@@ -1,33 +1,47 @@
 import Axios from 'axios';
 import '../styles/libro.css';
 import { useState, useEffect } from 'react';
+import "bootstrap/dist/css/bootstrap.min.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
-function Libro({auth}) {
+function Libro() {
 
+    //Estados para agregar libros
     const [titulo, setTitulo] = useState('');
     const [autor, setAutor] = useState('');
     const [categoria, setCategoria] = useState('');
     const [editorial, setEditorial] = useState('');
     const [fecha, setFecha] = useState('');
-    const [bookList, setBookList] = useState([]);
-    const [bookDeleted, setBookDeleted] = useState(null);
-    const [newBook, setNewBook] = useState(null);
-    // let enabled;
 
-    /* useEffect(()=>{
-        if(!auth){
-            return <Redirect to="/login" />
-        }
-    },[]); */
+    //Estados para actualizar libros
+    const [newTitle, setNewTitle] = useState('');
+    const [newAutor, setNewAutor] = useState('');
+    const [newCategory, setNewCategory] = useState('');
+    const [newEditorial, setNewEditorial] = useState('');
+    const [newDate, setNewDate] = useState('');
+
+    //Estado para mapear la lista de libros desde la DB
+    const [bookList, setBookList] = useState([]);
+
+    //Estados para re-render
+    const [newBook, setNewBook] = useState(null);
+    const [bookDeleted, setBookDeleted] = useState(null);
+    const [bookUpdated, setBookUpdated] = useState(null);
+
+    //Estado para mostrar modal
+    const [modal, setModal] = useState(false);
 
     useEffect(() => {
+        //Obtener libros desde la API
         Axios.get('http://localhost:3001/libro').then((res) => {
             setBookList(res.data);
             console.log(res.data);
         });    
-        // sub();
-    }, [bookDeleted, newBook]);
+    }, [bookDeleted, newBook, bookUpdated]);
 
+    //Agregar nuevo libro
     const addBook = () => {
         try {
             Axios.post('http://localhost:3001/libro',{
@@ -39,88 +53,115 @@ function Libro({auth}) {
         }).then(()=>{
             alert('Book Saved');
             setNewBook(titulo);
+            modalInsertar();
         });
         } catch (error) {
             console.log(error);
         } 
     };
 
+    //Eliminar un libro en base a un ID
     const deleteBook = (id) => {
         Axios.delete(`http://localhost:3001/libro/${id}`, {
-        }).then(()=>{
+        })
+        .then(()=>{
             alert('deleted');
+        })
+        .catch((error)=>{
+            console.log(error);
         });
       }
 
-      /* const activateInput=()=>{
-        enabled=!enabled;
-      } */
+    //Actualizar un libro en base a un ID  
+    const updateBook = (id) => {
+        Axios.put(`http://localhost:3001/libro/${id}`, {
+            newTitle: newTitle,
+            newAutor: newAutor,
+            newCategory: newCategory,
+            newEditorial: newEditorial,
+            newDate: newDate
+        })
+        .then(()=>{
+            alert('updated');
+        })
+        .catch((error)=>{
+            console.log(error);
+        });
+    }  
+
+    const modalInsertar = () => {
+        setModal(current => !current)
+    }
 
     return ( 
-    <div className = "App" >
-        <h1 > Registro de libros </h1> 
-        <label > Titulo </label> 
-        <input type = "text"
-        onChange = {
-            (event) => { setTitulo(event.target.value) } }
-        />
+        <div className="App">
+                <br />
+                <button className="btn btn-success" onClick={() => modalInsertar()}>Agregar Libro</button>
+                <br /><br />
+                <table className="table">
+                    <thead>
+                        <tr>
+                        <th>ID</th>
+                        <th>Titulo</th>
+                        <th>Autor</th>
+                        <th>Categoria</th>
+                        <th>Editorial</th>
+                        <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {bookList.libros?.map((value) => {
+                            return(
+                                <tr>    
+                                <td>{value._id}</td>
+                                <td>{value.titulo}</td>
+                                <td>{value.autor}</td>
+                                <td>{value.categoria}</td>
+                                <td>{value.editorial}</td>
+                                <td>{value.fecha}</td>
+                                <td>
+                                    <button className="btn btn-danger" onClick = {() => {deleteBook(value._id) 
+                                                                                         setBookDeleted(value._id)}}>
+                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                    </button>
+                                </td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
 
-        <label > Autor </label> 
-        <input type = "text"
-        onChange = {
-            (event) => { setAutor(event.target.value) } }
-        />
+                <Modal isOpen={modal}>
+                    <ModalHeader style={{display: 'block'}}>
+                        
+                    </ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label htmlFor="nombre">Titulo</label>
+                            <input className="form-control" type="text" name="titulo" id="titulo" onChange={(event) => {setTitulo(event.target.value)}}/>
+                            <br />
+                            <label htmlFor="nombre">Autor</label>
+                            <input className="form-control" type="text" name="autor" id="autor" onChange={(event) => {setAutor(event.target.value)}}/>
+                            <br />
+                            <label htmlFor="nombre">Categoria</label>
+                            <input className="form-control" type="text" name="categoria" id="categoria" onChange={(event) => {setCategoria(event.target.value)}}/>
+                            <br />
+                            <label htmlFor="nombre">Editorial</label>
+                            <input className="form-control" type="text" name="editorial" id="editorial" onChange={(event) => {setEditorial(event.target.value)}}/>
+                            <br />
+                            <label htmlFor="nombre">Fecha</label>
+                            <input className="form-control" type="date" name="fecha" id="fecha" onChange={(event) => {setFecha(event.target.value)}}/>
+                        </div>
+                    </ModalBody>
 
-        <label > Categoria </label> 
-        <input type = "text"
-        onChange = {
-            (event) => { setCategoria(event.target.value) } }
-        />
-
-        <label> Editorial </label> 
-        <input type = "text"
-        onChange = {
-            (event) => { setEditorial(event.target.value) } }
-        />
-
-        <label > Fecha </label> 
-        <input type = "date"
-        onChange = {
-            (event) => { setFecha(event.target.value) } }
-        />
-
-        <button className = "button-pressed"
-        onClick ={ ()=>{ addBook() }} >
-             Añadir libro 
-        </button>
-        <div>
-        <h1> Libros </h1> {
-            bookList.libros?.map((val, key) => {
-                return ( 
-                < div key = { key }>
-                    <ol>
-                        <label> Titulo: </label>
-                        <input type="text" value={ val.titulo } disabled/><br/>
-                        <label> Autor: </label>
-                        <input type="text" value={ val.autor } disabled/><br/>
-                        <label> Categoria: </label>
-                        <input type="text" value={ val.categoria } disabled/><br/>
-                        <label> Editorial: </label>
-                        <input type="text" value={ val.editorial } disabled/><br/>
-                        <label> Fecha: </label>
-                        <input type="date" value={ val.fecha } disabled/> <br/>
-                    </ol>
-                    <button className = "button-pressed" onClick = { () => {deleteBook(val._id)
-                        setBookDeleted(val._id) }}>Eliminar</button>
-                    <br/>    
-                    <button className = "button-pressed" onClick = { () => {console.log('Actualizando')}}>Actualizar</button>
-                </div>
-                );
-            })
-        }
+                    <ModalFooter>
+                        <button className="btn btn-success" onClick={() => addBook()}>
+                            Agregar
+                        </button>
+                        <button className="btn btn-danger" onClick={() => modalInsertar()}>Cancelar</button>
+                    </ModalFooter>
+                </Modal>
             </div>
-        </div>
-        
     );
 }
 
