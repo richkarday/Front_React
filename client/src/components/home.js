@@ -38,6 +38,9 @@ const HomeScreen = () =>{
   const navigateClients = () =>{
     history.push('/client')
   }
+  const navigateRental = () =>{
+    history.push('/bookRental/0')
+  }
   let history = useHistory();
     return(
     <div className="mainContainer">
@@ -104,7 +107,7 @@ const HomeScreen = () =>{
           <p>Administra los clientes disponibles o agrega nuevos</p>
         </div>
       </div>
-      <div className="card">
+      <div className="card" onClick={navigateRental}>
         <img className="imagePosition" src={imgCoin} alt="card book image"/>
         <div className="container">
           <h4><b>Renta</b></h4>

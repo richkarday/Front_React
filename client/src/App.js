@@ -29,6 +29,7 @@ function App() {
        </Route>
        <Route path="/home" >
          <HomeScreen />
+         </Route>
        <Route path="/bookrental/:idLibro">
          <BookRental/>
        </Route>
