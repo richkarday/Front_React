@@ -3,6 +3,7 @@ import Login from "./components/login";
 import Register from "./components/register"
 import Client from "./components/client"
 import HomeScreen from './components/home';
+import BookRental from './pages/bookRental'
 import {
   BrowserRouter as Router,
   Switch,
@@ -28,6 +29,8 @@ function App() {
        </Route>
        <Route path="/home" >
          <HomeScreen />
+       <Route path="/bookrental/:idLibro">
+         <BookRental/>
        </Route>
      </Switch>
    </Router>
