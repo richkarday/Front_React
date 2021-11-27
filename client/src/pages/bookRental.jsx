@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'
-import { Link } from 'react-router-dom';
 import axios from "axios";
 import { ArrowUpOutline } from 'react-ionicons'
-
+import { Carrusel } from '../components/carrusel';
 import styled from "styled-components";
+
+
 
 const Container = styled.div`
     position:relative;
@@ -87,12 +88,6 @@ const Th = styled.th`
     z-index:9;
     color: white;
 `
-const Tr = styled.tr`
-    color: black;
-`
-const Tre = styled.tr`
-    color: red;
-`
 const ButtonFloat = styled.button`
     position:fixed;
     bottom: 20px;
@@ -127,8 +122,9 @@ function BookRental() {
     const [visibleAlert, setvisibleAlert] = useState(false);
     const [mensaje, setmensaje] = useState("")
     const [setidLibro, setsetidLibro] = useState();
-    const [diasRenta, setdiasRenta] = useState(0)
+    const [buscador, setbuscador] = useState("")
     const [libro, setlibro] = useState();
+    const [libros, setLibros] = useState([]);
     const [autor, setautor] = useState();
     const [images, setimages] = useState(['https://islandpress.org/sites/default/files/default_book_cover_2015.jpg', 'https://islandpress.org/sites/default/files/default_book_cover_2015.jpg'])
     const [fecha, setFecha] = useState("");
@@ -141,7 +137,9 @@ function BookRental() {
     const [direccion, setdireccion] = useState("")
     const [email, setemail] = useState("")
     const [renta, setrenta] = useState([])
+
     useEffect(() => {
+
         axios.get(`${url}renta`).then(response => {
             setrenta(response.data.response)
         }).catch((err) => {
@@ -153,6 +151,10 @@ function BookRental() {
         }).catch((err) => {
 
         })
+        axios.get(`${url}libro/`).then(response => {
+            setLibros(response.data.libros)
+        }).catch((err) => {
+        })
         if (idLibro == 0) {
             setlibro('');
             setautor('');
@@ -162,7 +164,7 @@ function BookRental() {
                 setsetidLibro(response.data.libros[0]._id);
                 setlibro(response.data.libros[0].titulo);
                 setautor(response.data.libros[0].autor);
-                setimages(['https://images-na.ssl-images-amazon.com/images/I/81qQHLaY8kL.jpg', 'https://images-na.ssl-images-amazon.com/images/I/81IiQBDvOKL.jpg'])
+                setimages(response.data.libros[0].img)
 
             }).catch((err) => {
                 setlibro('');
@@ -186,18 +188,21 @@ function BookRental() {
     }, [usuariosid])
     useEffect(() => {
         axios.get(`${url}libro/buscar=${libro}`).then(response => {
+            setsetidLibro(response.data.libros[0]._id);
             setlibro(response.data.libros[0].titulo);
             setautor(response.data.libros[0].autor);
-            setimages(['https://images-na.ssl-images-amazon.com/images/I/81qQHLaY8kL.jpg', 'https://images-na.ssl-images-amazon.com/images/I/81IiQBDvOKL.jpg'])
-
+            setimages(response.data.libros[0].img)
+            
         }).catch((err) => {
         })
 
     }, [libro])
     useEffect(() => {
+        setlibro(idLibro)
+    }, [idLibro])
+    useEffect(() => {
         let now = new Date()
         let strToDate = new Date(fecha);
-        setdiasRenta(Math.round((strToDate - now) / (1000 * 60 * 60 * 24)) + 1)
         setTotal((Math.round((strToDate - now) / (1000 * 60 * 60 * 24)) + 1) * 5 || 0)
 
     }, [fecha])
@@ -224,7 +229,16 @@ function BookRental() {
             })
         }
     }, [client])
-
+useEffect(() => {
+    axios.get(`${url}libro/regex=${buscador}`).then(response => {
+        setLibros(response.data.libros)
+    }).catch((err) => {
+        axios.get(`${url}libro/`).then(response => {
+            setLibros(response.data.libros)
+        }).catch((err) => {
+        })
+    })
+}, [buscador])
     const createRental = async () => {
         if (total == 0 || nombre == '') {
             await setmensaje("Todos los campos son obligatorios")
@@ -257,7 +271,6 @@ function BookRental() {
         }
     }
     const delteRental = (id, key) => {
-        console.log(id);
         let data = {
             estado: false,
 
@@ -285,6 +298,14 @@ function BookRental() {
                 <ArrowUpOutline color={'#FF0000'} height="40px" width="40px" onClick={() => window.scrollTo(0, 0)} />
             </ButtonFloat> : null}
             <Container>
+                <div style={{ width: '100%' }}>
+                    <Input placeholder="Buscar Libro" onChange={(event) => setbuscador(event.target.value)}></Input>
+                    <Salto></Salto>
+                    <Carrusel libros={libros}></Carrusel>
+                </div>
+
+            </Container>
+            <Container>
                 <Divisor>
                     <Image src={images[0]}></Image>
                     <Image src={images[1]}></Image>
@@ -308,7 +329,6 @@ function BookRental() {
                                 )
                             })
                         }
-
                     </Select>
                     <Salto></Salto>
                     <Input type="text" placeholder="Nombre" value={nombre} onChange={e => setnombre(e.target.value)}></Input>
@@ -342,7 +362,7 @@ function BookRental() {
                             renta.map((renta, key) => {
                                 return (
                                     renta.cargos < 0 ?
-                                        <tr style={{ color: 'red' }}>
+                                        <tr key={key} style={{ color: 'red' }}>
                                             <td>{renta.libro}</td>
                                             <td>{renta.client}</td>
                                             <td>{renta.telefono}</td>
@@ -351,7 +371,7 @@ function BookRental() {
                                             <td><Button key={key} onClick={() => delteRental(renta._id, key)}>Entregado</Button></td>
                                         </tr>
                                         :
-                                        <tr>
+                                        <tr key={key}>
                                             <td>{renta.libro}</td>
                                             <td>{renta.client}</td>
                                             <td>{renta.telefono}</td>
