@@ -24,14 +24,17 @@ import { Link, useHistory } from 'react-router-dom';
 const HomeScreen = () =>{
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const name = "Usuario";
+  const name = localStorage.getItem("nombre");
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const logOut = () => {
+    localStorage.clear();
+    history.push('/');
+  }
   const navigateBooks = () => {
     history.push('/books');
   }
@@ -89,7 +92,7 @@ const HomeScreen = () =>{
         <MenuItem>
             <Avatar> <SettingsOutlinedIcon/> </Avatar> Ajustes
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={logOut}>
           <Avatar> <ExitToAppOutlinedIcon/> </Avatar> Salir de la cuenta
         </MenuItem>
       </Menu>

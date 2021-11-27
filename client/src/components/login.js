@@ -25,7 +25,8 @@ const Login = () => {
           }).then((response) => {
               alert("Usted inició sesión")
               console.log(response)
-              history.push('/client')
+              localStorage.setItem("nombre", response.data.UsrDB.nombre);
+              history.push('/home')
           })    
         }catch(err) {
             alert("No ingresó bien los datos")
