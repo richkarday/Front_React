@@ -1,6 +1,7 @@
 import React from 'react';
 import '../styles/home.css';
 import imgBook from '../assets/book.png';
+import OneSignal from 'react-onesignal';
 import imgClient from '../assets/people.png';
 import imgCoin from '../assets/coin.png';
 import { 
@@ -22,6 +23,11 @@ import { Link, useHistory } from 'react-router-dom';
 
 
 const HomeScreen = () =>{
+  React.useEffect(() => {
+    OneSignal.init({
+      appId: "823879a6-405f-4a69-80b3-531d05936ada"
+    });
+  }, []);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const name = "Usuario";
@@ -29,6 +35,7 @@ const HomeScreen = () =>{
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    
     setAnchorEl(null);
   };
 
