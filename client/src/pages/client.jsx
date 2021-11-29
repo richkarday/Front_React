@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import {Navbar} from '../components/navbar';
 
 const url = "http://localhost:3001/client"
 
@@ -70,6 +71,7 @@ function Client() {
 
     return (
         <div className="App">
+            <Navbar></Navbar>
             {   
                 spinShow ? <Spinner></Spinner> : null
             } 

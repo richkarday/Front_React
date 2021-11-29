@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom'
 import axios from "axios";
 import { ArrowUpOutline } from 'react-ionicons'
 import { Carrusel } from '../components/carrusel';
-import {Spinner} from './../components/spinner'
+import {Spinner} from './../components/spinner';
+import {Navbar} from '../components/navbar';
 import styled from "styled-components";
 
 
@@ -13,7 +14,7 @@ const Container = styled.div`
     width: 100%;
     height: auto;
     display: flex;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid green;
     padding: 20px;
 `
 const Divisor = styled.div`
@@ -37,6 +38,9 @@ const Input = styled.input`
     border-radius:5px;
     width:40%;
     height:30px;
+    font-size:20px;
+
+    
     
 `
 const Select = styled.select`
@@ -84,7 +88,7 @@ const Th = styled.th`
     position:relative;
     width:16.66%;
     position: sticky;
-    top: 0;
+    top: 80px;
     background-color: #4CAF50;
     z-index:9;
     color: white;
@@ -244,6 +248,7 @@ useEffect(() => {
     const createRental = async () => {
         setspinShow(true)
         if (total == 0 || nombre == '') {
+            setspinShow(false)
             await setmensaje("Todos los campos son obligatorios")
             await setvisibleAlert(true)
             await sleep(3000)
@@ -302,6 +307,8 @@ useEffect(() => {
 
     return (
         <div>
+                    <Navbar></Navbar>
+
             {   
                 spinShow ? <Spinner></Spinner> : null
             } 
@@ -311,7 +318,7 @@ useEffect(() => {
             </ButtonFloat> : null}
             <Container>
                 <div style={{ width: '100%' }}>
-                    <Input placeholder="Buscar Libro" onChange={(event) => setbuscador(event.target.value)}></Input>
+                    <Input placeholder="Buscar Libro..." onChange={(event) => setbuscador(event.target.value)}></Input>
                     <Salto></Salto>
                     <Carrusel libros={libros}></Carrusel>
                 </div>
