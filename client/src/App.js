@@ -1,18 +1,17 @@
 import './App.css';
-import Login from "./components/login";
 import React, { useEffect }  from 'react';
-
-import Register from "./components/register"
-import Client from "./components/client"
-import HomeScreen from './components/home';
-import OneSignal from 'react-onesignal';
+import Login from "./pages/login";
+import Libro from './pages/Libros';
+import Register from "./pages/register"
+import Client from "./pages/client";
 import BookRental from './pages/bookRental'
+import HomeScreen from './pages/home';
+import OneSignal from 'react-onesignal';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
 } from "react-router-dom";
-import Libro from './pages/Libros';
 
 function App() {
   useEffect(() => {
