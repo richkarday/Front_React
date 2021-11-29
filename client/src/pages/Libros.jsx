@@ -1,12 +1,15 @@
 import Axios from 'axios';
 import '../styles/libro.css';
 import { useState, useEffect } from 'react';
+import {Spinner} from './../components/spinner'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
 function Libro() {
+    //Estados para mostarr spinner
+    const [spinShow, setspinShow] = useState(false)
 
     //Estados para agregar libros
     const [titulo, setTitulo] = useState('');
@@ -43,6 +46,7 @@ function Libro() {
 
     //Agregar nuevo libro
     const addBook = () => {
+        setspinShow(true)
         try {
             Axios.post('http://localhost:3001/libro',{
             titulo:titulo,
@@ -51,23 +55,28 @@ function Libro() {
             editorial:editorial,
             fecha:fecha
         }).then(()=>{
+            setspinShow(false)
             alert('Book Saved');
             setNewBook(titulo);
             modalInsertar();
         });
         } catch (error) {
             console.log(error);
+            setspinShow(false)
         } 
     };
 
     //Eliminar un libro en base a un ID
     const deleteBook = (id) => {
+        setspinShow(true)
         Axios.delete(`http://localhost:3001/libro/${id}`, {
         })
         .then(()=>{
+            setspinShow(false)
             alert('deleted');
         })
         .catch((error)=>{
+            setspinShow(false)
             console.log(error);
         });
       }
@@ -95,6 +104,9 @@ function Libro() {
 
     return ( 
         <div className="App">
+            {   
+                spinShow ? <Spinner></Spinner> : null
+            } 
                 <br />
                 <button className="btn btn-success" onClick={() => modalInsertar()}>Agregar Libro</button>
                 <br /><br />

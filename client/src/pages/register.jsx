@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Grid, Paper, Avatar, TextField, Button, Typography } from '@material-ui/core'
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import { Link, useHistory } from 'react-router-dom';
+import {Spinner} from './../components/spinner'
 import Axios from 'axios';
 
 const Register = () => {
@@ -9,7 +10,7 @@ const Register = () => {
     const avatarStyle = { backgroundColor: '#1bbd7e' }
     const btnStyle = { margin: '8px 0' }
     const linkStyle = { marginLeft: '5px' }
-
+    const [spinShow, setspinShow] = useState(false)
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
     const [telefono, setTelefono] = useState("");
@@ -19,7 +20,7 @@ const Register = () => {
     let history = useHistory();
 
     const Signup = () => {
-
+        setspinShow(true)
         try{
             Axios.post("http://localhost:3001/usuario", {
               nombre: nombre, 
@@ -28,17 +29,22 @@ const Register = () => {
               correo: correo,
               password: password
             }).then((response) => {
+                setspinShow(false)
                 alert('Usuario registrado con exito')
                 console.log(response);
                 history.push('/')
             });
         }catch(err) {
+            setspinShow(false)
             console.log(err)
         }
     }
 
     return (
         <Grid>
+            {   
+                spinShow ? <Spinner></Spinner> : null
+            } 
             <Paper elevation={10} style={paperStyle}>
                 <Grid align="center">
                 <Avatar style={avatarStyle}><PersonOutlineIcon/></Avatar>

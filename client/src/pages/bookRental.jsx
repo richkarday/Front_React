@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import axios from "axios";
 import { ArrowUpOutline } from 'react-ionicons'
 import { Carrusel } from '../components/carrusel';
+import {Spinner} from './../components/spinner'
 import styled from "styled-components";
 
 
@@ -120,6 +121,7 @@ function BookRental() {
     const { idLibro } = useParams();
     const [visibleButton, setvisibleButton] = useState(false);
     const [visibleAlert, setvisibleAlert] = useState(false);
+    const [spinShow, setspinShow] = useState(false)
     const [mensaje, setmensaje] = useState("")
     const [setidLibro, setsetidLibro] = useState();
     const [buscador, setbuscador] = useState("")
@@ -240,6 +242,7 @@ useEffect(() => {
     })
 }, [buscador])
     const createRental = async () => {
+        setspinShow(true)
         if (total == 0 || nombre == '') {
             await setmensaje("Todos los campos son obligatorios")
             await setvisibleAlert(true)
@@ -256,27 +259,31 @@ useEffect(() => {
             }
             axios.post(`${url}renta`, data).then(response => {
                 axios.get(`${url}renta`).then(async response => {
+                    setspinShow(false)
                     await setmensaje("Se registro correctamente la renta")
                     await setrenta(response.data.response)
                     await setvisibleAlert(true)
                     await sleep(3000)
                     await setvisibleAlert(false)
-
+                    
                 }).catch((err) => {
-
+                    setspinShow(false)
                 })
             }).catch((err) => {
                 console.log(err);
+                setspinShow(false)
             })
         }
     }
     const delteRental = (id, key) => {
+        setspinShow(true)
         let data = {
             estado: false,
 
         }
         axios.put(`${url}renta/delete=${id}`, data).then(response => {
             axios.get(`${url}renta`).then(async response => {
+                setspinShow(false)
                 await setmensaje("Se entrego correctamente la renta")
                 await setrenta(response.data.response)
                 await setvisibleAlert(true)
@@ -284,15 +291,20 @@ useEffect(() => {
                 await setvisibleAlert(false)
 
             }).catch((err) => {
+                setspinShow(false)
 
             })
         }).catch((err) => {
+            setspinShow(false)
             console.log(err);
         })
     }
 
     return (
         <div>
+            {   
+                spinShow ? <Spinner></Spinner> : null
+            } 
             {visibleAlert ? <Alert>{mensaje}</Alert> : null}
             {visibleButton ? <ButtonFloat>
                 <ArrowUpOutline color={'#FF0000'} height="40px" width="40px" onClick={() => window.scrollTo(0, 0)} />

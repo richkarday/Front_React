@@ -3,6 +3,7 @@ import { Grid, Paper, Avatar, TextField, Button, FormControlLabel, Typography } 
 import Checkbox from '@material-ui/core/Checkbox'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { Link, useHistory } from 'react-router-dom';
+import {Spinner} from './../components/spinner'
 import Axios from 'axios';
 
 const Login = () => {
@@ -10,31 +11,33 @@ const Login = () => {
     const avatarStyle = { backgroundColor: '#1bbd7e' }
     const btnStyle = { margin: '8px 0' }
     const linkStyle = { marginLeft: '5px' }
-
     const [correo, setCorreo] = useState("")
     const [password, setPassword] = useState("")
-
+    const [spinShow, setspinShow] = useState(false)
     let history = useHistory();
 
     const login = () => {
-
-        try {
+        setspinShow(true)
           Axios.post("http://localhost:3001/login" , {
             correo: correo,
             password: password
           }).then((response) => {
-              alert("Usted inició sesión")
-              console.log(response)
-              history.push('/client')
-          })    
-        }catch(err) {
+            setspinShow(false)
+            history.push('/home');
+          }).catch((err) => {
+            setspinShow(false)
             alert("No ingresó bien los datos")
             console.log(err);
-        }
+          }) 
+        
     }
 
     return (
         <Grid>
+            {   
+                spinShow ? <Spinner></Spinner> : null
+            } 
+
             <Paper elevation={10} style={paperStyle}>
                 <Grid align="center">
                 <Avatar style={avatarStyle}><LockOutlinedIcon/></Avatar>
